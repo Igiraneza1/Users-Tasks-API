@@ -1,0 +1,36 @@
+{
+  "name": "users-tasks-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nest start --watch",
+  "start": "node dist/main.js",
+  "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Igiraneza1/Users-Tasks-API.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Igiraneza1/Users-Tasks-API/issues"
+  },
+  "homepage": "https://github.com/Igiraneza1/Users-Tasks-API#readme",
+  "dependencies": {
+    "@nestjs/typeorm": "^11.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "pg": "^8.16.3",
+    "typeorm": "^0.3.26"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  }
+}
