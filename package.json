@@ -23,16 +23,24 @@
   "homepage": "https://github.com/Igiraneza1/Users-Tasks-API#readme",
   "dependencies": {
     "@nestjs/config": "^4.0.2",
+    "@nestjs/jwt": "^11.0.0",
+    "@nestjs/passport": "file:...",
     "@nestjs/platform-express": "^11.1.6",
     "@nestjs/typeorm": "^11.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
+    "passport": "file:...",
+    "passport-jwt": "^4.0.1",
     "pg": "^8.16.3",
     "typeorm": "^0.3.26"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.10",
+    "@types/bcrypt": "^6.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.3.0",
+    "@types/passport": "^1.0.17",
+    "@types/passport-jwt": "^4.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   }

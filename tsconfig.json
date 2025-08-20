@@ -12,7 +12,12 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": "./src",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,      
+    "allowSyntheticDefaultImports": true 
   },
   "exclude": ["node_modules", "dist"]
 }

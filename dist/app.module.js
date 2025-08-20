@@ -12,6 +12,7 @@ const config_1 = require("@nestjs/config");
 const typeorm_1 = require("@nestjs/typeorm");
 const users_module_1 = require("./users/users.module");
 const tasks_module_1 = require("./tasks/tasks.module");
+const auth_module_1 = require("./auth/auth.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -25,7 +26,7 @@ exports.AppModule = AppModule = __decorate([
                 useFactory: (config) => ({
                     type: 'postgres',
                     host: config.get('DB_HOST'),
-                    port: config.get('DB_PORT'),
+                    port: Number(config.get('DB_PORT')),
                     username: config.get('DB_USERNAME'),
                     password: config.get('DB_PASSWORD'),
                     database: config.get('DB_NAME'),
@@ -35,6 +36,7 @@ exports.AppModule = AppModule = __decorate([
             }),
             users_module_1.UsersModule,
             tasks_module_1.TasksModule,
+            auth_module_1.AuthModule,
         ],
     })
 ], AppModule);
