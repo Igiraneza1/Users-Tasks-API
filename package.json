@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nest start --watch",
-  "start": "node dist/main.js",
-  "build": "tsc"
+    "start": "node dist/main.js",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,8 @@
   },
   "homepage": "https://github.com/Igiraneza1/Users-Tasks-API#readme",
   "dependencies": {
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/platform-express": "^11.1.6",
     "@nestjs/typeorm": "^11.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
@@ -29,6 +31,7 @@
     "typeorm": "^0.3.26"
   },
   "devDependencies": {
+    "@nestjs/cli": "^11.0.10",
     "@types/node": "^24.3.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
