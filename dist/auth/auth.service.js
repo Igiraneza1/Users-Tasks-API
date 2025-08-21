@@ -47,38 +47,33 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
-const typeorm_1 = require("typeorm");
-const user_entity_1 = require("../users/user.entity");
-const typeorm_2 = require("@nestjs/typeorm");
+const typeorm_1 = require("@nestjs/typeorm");
+const typeorm_2 = require("typeorm");
 const bcrypt = __importStar(require("bcrypt"));
-const jwt = __importStar(require("jsonwebtoken"));
+const user_entity_1 = require("../users/user.entity");
 let AuthService = class AuthService {
-    constructor(usersRepository) {
-        this.usersRepository = usersRepository;
+    constructor(userRepository) {
+        this.userRepository = userRepository;
     }
     async signup(name, email, password) {
-        const existingUser = await this.usersRepository.findOne({ where: { email } });
-        if (existingUser)
-            throw new common_1.BadRequestException('Email already registered');
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = this.usersRepository.create({ name, email, password: hashedPassword });
-        return this.usersRepository.save(user);
+        const user = this.userRepository.create({ name, email, password: hashedPassword });
+        return this.userRepository.save(user);
     }
     async login(email, password) {
-        const user = await this.usersRepository.findOne({ where: { email } });
+        const user = await this.userRepository.findOne({ where: { email } });
         if (!user)
-            throw new common_1.UnauthorizedException('Invalid credentials');
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid)
-            throw new common_1.UnauthorizedException('Invalid credentials');
-        const token = jwt.sign({ userId: user.id }, 'your_jwt_secret', { expiresIn: '1h' });
-        return { token };
+            return { message: 'User not found' };
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch)
+            return { message: 'Invalid password' };
+        return { message: 'Login successful', user };
     }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, typeorm_2.InjectRepository)(user_entity_1.User)),
-    __metadata("design:paramtypes", [typeorm_1.Repository])
+    __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
+    __metadata("design:paramtypes", [typeorm_2.Repository])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

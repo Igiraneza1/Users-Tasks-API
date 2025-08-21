@@ -1,34 +1,27 @@
-import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { User } from '../users/user.entity';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
+import { User } from '../users/user.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private userRepository: Repository<User>,
   ) {}
 
   async signup(name: string, email: string, password: string) {
-    const existingUser = await this.usersRepository.findOne({ where: { email } });
-    if (existingUser) throw new BadRequestException('Email already registered');
-
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = this.usersRepository.create({ name, email, password: hashedPassword });
-    return this.usersRepository.save(user);
+    const user = this.userRepository.create({ name, email, password: hashedPassword });
+    return this.userRepository.save(user);
   }
 
   async login(email: string, password: string) {
-    const user = await this.usersRepository.findOne({ where: { email } });
-    if (!user) throw new UnauthorizedException('Invalid credentials');
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) throw new UnauthorizedException('Invalid credentials');
-
-    const token = jwt.sign({ userId: user.id }, 'your_jwt_secret', { expiresIn: '1h' });
-    return { token };
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) return { message: 'User not found' };
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return { message: 'Invalid password' };
+    return { message: 'Login successful', user };
   }
 }

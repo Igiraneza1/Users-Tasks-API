@@ -5,6 +5,10 @@ export declare class AuthController {
     constructor(authService: AuthService);
     signup(dto: CreateAuthDto): Promise<import("../users/user.entity").User>;
     login(dto: CreateAuthDto): Promise<{
-        token: string;
+        message: string;
+        user?: undefined;
+    } | {
+        message: string;
+        user: import("../users/user.entity").User;
     }>;
 }

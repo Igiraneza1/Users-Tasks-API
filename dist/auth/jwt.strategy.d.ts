@@ -1,9 +1,7 @@
-declare const JwtStrategy_base: any;
-export declare class JwtStrategy extends JwtStrategy_base {
-    constructor();
-    validate(payload: any): Promise<{
-        userId: any;
-        email: any;
-    }>;
+import { CanActivate, ExecutionContext } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+export declare class JwtAuthGuard implements CanActivate {
+    private jwtService;
+    constructor(jwtService: JwtService);
+    canActivate(context: ExecutionContext): boolean;
 }
-export {};

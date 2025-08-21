@@ -7,12 +7,12 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @Post('signup')  // public signup
+  @Post('signup')  
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
-  @UseGuards(JwtAuthGuard) // protect all below routes
+  @UseGuards(JwtAuthGuard) 
   @Get()
   findAll() {
     return this.usersService.findAll();

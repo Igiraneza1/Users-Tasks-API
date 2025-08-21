@@ -9,24 +9,33 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.JwtStrategy = void 0;
+exports.JwtAuthGuard = void 0;
 const common_1 = require("@nestjs/common");
-const passport_1 = require("@nestjs/passport");
-const passport_jwt_1 = require("passport-jwt");
-let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy) {
-    constructor() {
-        super({
-            jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrKey: 'your_jwt_secret',
-        });
+const jwt_1 = require("@nestjs/jwt");
+let JwtAuthGuard = class JwtAuthGuard {
+    constructor(jwtService) {
+        this.jwtService = jwtService;
     }
-    async validate(payload) {
-        return { userId: payload.sub, email: payload.email };
+    canActivate(context) {
+        const request = context.switchToHttp().getRequest();
+        const authHeader = request.headers['authorization'];
+        if (!authHeader) {
+            throw new common_1.UnauthorizedException('No token provided');
+        }
+        const token = authHeader.split(' ')[1];
+        try {
+            const payload = this.jwtService.verify(token, { secret: 'your_jwt_secret' });
+            request.user = payload;
+            return true;
+        }
+        catch (e) {
+            throw new common_1.UnauthorizedException('Invalid token');
+        }
     }
 };
-exports.JwtStrategy = JwtStrategy;
-exports.JwtStrategy = JwtStrategy = __decorate([
+exports.JwtAuthGuard = JwtAuthGuard;
+exports.JwtAuthGuard = JwtAuthGuard = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [])
-], JwtStrategy);
+    __metadata("design:paramtypes", [jwt_1.JwtService])
+], JwtAuthGuard);
 //# sourceMappingURL=jwt.strategy.js.map
