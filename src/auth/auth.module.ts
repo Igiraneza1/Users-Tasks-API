@@ -1,13 +1,20 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { User } from '../users/user.entity';
+import { UsersModule } from '../users/users.module';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
-  providers: [AuthService],
+  imports: [
+    UsersModule,
+    JwtModule.register({
+      secret: process.env.JWT_SECRET || 'your_jwt_secret',
+      signOptions: { expiresIn: '1h' },
+    }),
+  ],
   controllers: [AuthController],
-  exports: [AuthService],
+  providers: [AuthService, JwtAuthGuard], 
+  exports: [AuthService, JwtModule, JwtAuthGuard], 
 })
 export class AuthModule {}

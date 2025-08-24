@@ -15,15 +15,15 @@ class CreateTaskDto {
 }
 exports.CreateTaskDto = CreateTaskDto;
 __decorate([
-    (0, class_validator_1.IsNotEmpty)({ message: 'Title is required' }),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateTaskDto.prototype, "title", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)({ message: 'Description is required' }),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateTaskDto.prototype, "description", void 0);
 __decorate([
-    (0, class_validator_1.IsNumber)({}, { message: 'userId must be a number' }),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], CreateTaskDto.prototype, "userId", void 0);
 //# sourceMappingURL=create-task.dto.js.map

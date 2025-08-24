@@ -17,13 +17,13 @@ const common_1 = require("@nestjs/common");
 const tasks_service_1 = require("./tasks.service");
 const create_task_dto_1 = require("./dto/create-task.dto");
 const update_task_status_dto_1 = require("./dto/update-task-status.dto");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 let TasksController = class TasksController {
     constructor(tasksService) {
         this.tasksService = tasksService;
     }
     create(createTaskDto) {
-        const { title, description, userId } = createTaskDto;
-        return this.tasksService.create(userId, title, description);
+        return this.tasksService.create(createTaskDto);
     }
     findAll() {
         return this.tasksService.findAll();
@@ -31,8 +31,8 @@ let TasksController = class TasksController {
     findOne(id) {
         return this.tasksService.findOne(+id);
     }
-    updateStatus(id, updateTaskStatusDto) {
-        return this.tasksService.updateStatus(+id, updateTaskStatusDto.status);
+    updateStatus(id, updateDto) {
+        return this.tasksService.updateStatus(+id, updateDto.status);
     }
     remove(id) {
         return this.tasksService.remove(+id);
@@ -60,6 +60,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], TasksController.prototype, "findOne", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Patch)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
@@ -68,6 +69,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], TasksController.prototype, "updateStatus", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),

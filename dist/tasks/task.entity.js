@@ -26,26 +26,22 @@ __decorate([
     __metadata("design:type", Number)
 ], Task.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'varchar', length: 255 }),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Task.prototype, "title", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'text' }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], Task.prototype, "description", void 0);
 __decorate([
-    (0, typeorm_1.Column)({
-        type: 'enum',
-        enum: TaskStatus,
-        default: TaskStatus.PENDING,
-    }),
+    (0, typeorm_1.Column)({ type: 'enum', enum: TaskStatus, default: TaskStatus.PENDING }),
     __metadata("design:type", String)
 ], Task.prototype, "status", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, user => user.tasks, { onDelete: 'CASCADE', eager: true }),
+    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.tasks, { eager: true }),
     __metadata("design:type", user_entity_1.User)
 ], Task.prototype, "user", void 0);
 exports.Task = Task = __decorate([
-    (0, typeorm_1.Entity)('tasks')
+    (0, typeorm_1.Entity)()
 ], Task);
 //# sourceMappingURL=task.entity.js.map

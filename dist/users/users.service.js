@@ -16,27 +16,26 @@ exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
-const user_entity_1 = require("./user.entity");
+const user_entity_1 = require("../users/user.entity");
 let UsersService = class UsersService {
-    constructor(repo) {
-        this.repo = repo;
+    constructor(usersRepo) {
+        this.usersRepo = usersRepo;
     }
     create(createUserDto) {
-        const user = this.repo.create(createUserDto);
-        return this.repo.save(user);
+        const user = this.usersRepo.create(createUserDto);
+        return this.usersRepo.save(user);
     }
     findAll() {
-        return this.repo.find({ relations: ['tasks'] });
+        return this.usersRepo.find({ relations: ['tasks'] });
     }
-    async findOne(id) {
-        const user = await this.repo.findOne({ where: { id }, relations: ['tasks'] });
-        if (!user)
-            throw new common_1.NotFoundException(`User with id ${id} not found`);
-        return user;
+    async findByEmail(email) {
+        return this.usersRepo.findOne({ where: { email } });
     }
-    async remove(id) {
-        const user = await this.findOne(id);
-        return this.repo.remove(user);
+    findOne(id) {
+        return this.usersRepo.findOne({ where: { id }, relations: ['tasks'] });
+    }
+    remove(id) {
+        return this.usersRepo.delete(id);
     }
 };
 exports.UsersService = UsersService;

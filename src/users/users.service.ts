@@ -1,30 +1,38 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './user.entity';
+import { User } from '../users/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(User) private repo: Repository<User>) {}
+  constructor(
+    @InjectRepository(User) private usersRepo: Repository<User>,
+  ) {}
 
+  // Create a new user
   create(createUserDto: CreateUserDto) {
-    const user = this.repo.create(createUserDto);
-    return this.repo.save(user);
+    const user = this.usersRepo.create(createUserDto); 
+    return this.usersRepo.save(user); 
   }
 
+  // Get all users with their tasks
   findAll() {
-    return this.repo.find({ relations: ['tasks'] });
+    return this.usersRepo.find({ relations: ['tasks'] }); 
   }
 
-  async findOne(id: number) {
-    const user = await this.repo.findOne({ where: { id }, relations: ['tasks'] });
-    if (!user) throw new NotFoundException(`User with id ${id} not found`);
-    return user;
+  async findByEmail(email: string) {
+  return this.usersRepo.findOne({ where: { email } });
+}
+
+
+  // Get one user by ID with tasks
+  findOne(id: number) {
+    return this.usersRepo.findOne({ where: { id }, relations: ['tasks'] });
   }
 
-  async remove(id: number) {
-    const user = await this.findOne(id);
-    return this.repo.remove(user);
+  // Delete user by ID
+  remove(id: number) {
+    return this.usersRepo.delete(id);
   }
 }

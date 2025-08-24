@@ -1,41 +1,47 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Task, TaskStatus } from './task.entity';
+import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
 import { User } from '../users/user.entity';
 
 @Injectable()
 export class TasksService {
   constructor(
-    @InjectRepository(Task) private taskRepo: Repository<Task>,
-    @InjectRepository(User) private userRepo: Repository<User>,
+    @InjectRepository(Task) private readonly tasksRepo: Repository<Task>,
+    @InjectRepository(User) private readonly usersRepo: Repository<User>,
   ) {}
 
-  findAll() {
-    return this.taskRepo.find({ relations: ['user'] });
+  async create(createTaskDto: CreateTaskDto): Promise<Task> {
+    const user = await this.usersRepo.findOneBy({ id: createTaskDto.userId });
+    if (!user) throw new NotFoundException(`User with ID ${createTaskDto.userId} not found`);
+
+    const task = this.tasksRepo.create({ ...createTaskDto, user });
+    return this.tasksRepo.save(task);
   }
 
-  async findOne(id: number) {
-    const task = await this.taskRepo.findOne({ where: { id }, relations: ['user'] });
-    if (!task) throw new NotFoundException(`Task with id ${id} not found`);
+  findAll(): Promise<Task[]> {
+    return this.tasksRepo.find({ relations: ['user'] });
+  }
+
+  async findOne(id: number): Promise<Task> {
+    const task = await this.tasksRepo.findOne({ where: { id }, relations: ['user'] });
+    if (!task) throw new NotFoundException(`Task with ID ${id} not found`);
     return task;
   }
 
-  async create(userId: number, title: string, description: string) {
-    const user = await this.userRepo.findOneBy({ id: userId });
-    if (!user) throw new NotFoundException(`User with id ${userId} not found`);
-    const task = this.taskRepo.create({ title, description, user, status: TaskStatus.PENDING });
-    return this.taskRepo.save(task);
-  }
-
-  async updateStatus(id: number, status: TaskStatus) {
+  async updateStatus(id: number, status: TaskStatus): Promise<Task> {
     const task = await this.findOne(id);
+    if (!Object.values(TaskStatus).includes(status)) {
+      throw new BadRequestException('Invalid task status');
+    }
     task.status = status;
-    return this.taskRepo.save(task);
+    return this.tasksRepo.save(task);
   }
 
-  async remove(id: number) {
-    const task = await this.findOne(id);
-    return this.taskRepo.remove(task);
+  async remove(id: number): Promise<void> {
+    const result = await this.tasksRepo.delete(id);
+    if (result.affected === 0) throw new NotFoundException(`Task with ID ${id} not found`);
   }
 }

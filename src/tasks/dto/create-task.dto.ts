@@ -1,11 +1,12 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
-export class CreateTaskDto {
-  @IsNotEmpty({ message: 'Title is required' })
-  title!: string; 
+import { IsNotEmpty, IsOptional, IsNumber } from 'class-validator';
 
-  @IsNotEmpty({ message: 'Description is required' })
+export class CreateTaskDto {
+  @IsNotEmpty()
+  title!: string;
+
+  @IsOptional()
   description!: string;
 
-  @IsNumber({}, { message: 'userId must be a number' })
-  userId!: number;
+  @IsNumber()
+  userId!: number; 
 }

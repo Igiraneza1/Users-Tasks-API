@@ -11,6 +11,7 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const typeorm_1 = require("@nestjs/typeorm");
 const users_module_1 = require("./users/users.module");
+const tasks_module_1 = require("./tasks/tasks.module");
 const auth_module_1 = require("./auth/auth.module");
 let AppModule = class AppModule {
 };
@@ -24,17 +25,18 @@ exports.AppModule = AppModule = __decorate([
                 inject: [config_1.ConfigService],
                 useFactory: (config) => ({
                     type: 'postgres',
-                    host: config.get('DB_HOST'),
-                    port: config.get('DB_PORT'),
-                    username: config.get('DB_USERNAME'),
-                    password: config.get('DB_PASSWORD'),
-                    database: config.get('DB_NAME'),
+                    host: config.get('DB_HOST', 'localhost'),
+                    port: config.get('DB_PORT', 5432),
+                    username: config.get('DB_USERNAME', 'postgres'),
+                    password: config.get('DB_PASSWORD', 'postgres'),
+                    database: config.get('DB_NAME', 'users_tasks_db'),
                     entities: [__dirname + '/**/*.entity{.ts,.js}'],
                     synchronize: true,
                 }),
             }),
             users_module_1.UsersModule,
             auth_module_1.AuthModule,
+            tasks_module_1.TasksModule,
         ],
     })
 ], AppModule);

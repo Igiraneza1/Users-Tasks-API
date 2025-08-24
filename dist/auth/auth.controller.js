@@ -15,32 +15,33 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
-const create_auth_dto_1 = require("./dto/create-auth.dto");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    signup(dto) {
-        var _a;
-        return this.authService.signup((_a = dto.name) !== null && _a !== void 0 ? _a : '', dto.email, dto.password);
+    signup(name, email, password) {
+        return this.authService.signup(name, email, password);
     }
-    login(dto) {
-        return this.authService.login(dto.email, dto.password);
+    login(email, password) {
+        return this.authService.login(email, password);
     }
 };
 exports.AuthController = AuthController;
 __decorate([
     (0, common_1.Post)('signup'),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, common_1.Body)('name')),
+    __param(1, (0, common_1.Body)('email')),
+    __param(2, (0, common_1.Body)('password')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_auth_dto_1.CreateAuthDto]),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "signup", null);
 __decorate([
     (0, common_1.Post)('login'),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, common_1.Body)('email')),
+    __param(1, (0, common_1.Body)('password')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_auth_dto_1.CreateAuthDto]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "login", null);
 exports.AuthController = AuthController = __decorate([

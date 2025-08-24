@@ -1,7 +1,7 @@
-import { CanActivate, ExecutionContext } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-export declare class JwtAuthGuard implements CanActivate {
-    private jwtService;
-    constructor(jwtService: JwtService);
-    canActivate(context: ExecutionContext): boolean;
+import { TasksService } from '../tasks/tasks.service';
+import { UpdateTaskStatusDto } from '../tasks/dto/update-task-status.dto';
+export declare class TasksController {
+    private readonly tasksService;
+    constructor(tasksService: TasksService);
+    updateStatus(id: number, updateDto: UpdateTaskStatusDto): Promise<import("../tasks/task.entity").Task>;
 }

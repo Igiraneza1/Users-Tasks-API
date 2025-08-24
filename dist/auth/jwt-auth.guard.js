@@ -16,20 +16,25 @@ let JwtAuthGuard = class JwtAuthGuard {
     constructor(jwtService) {
         this.jwtService = jwtService;
     }
-    canActivate(context) {
+    async canActivate(context) {
         const request = context.switchToHttp().getRequest();
         const authHeader = request.headers['authorization'];
         if (!authHeader) {
             throw new common_1.UnauthorizedException('No token provided');
         }
-        const token = authHeader.split(' ')[1];
+        const [bearer, token] = authHeader.split(' ');
+        if (bearer !== 'Bearer' || !token) {
+            throw new common_1.UnauthorizedException('Invalid token format');
+        }
         try {
-            const payload = this.jwtService.verify(token, { secret: 'your_jwt_secret' });
+            const payload = await this.jwtService.verifyAsync(token, {
+                secret: process.env.JWT_SECRET || 'your_jwt_secret',
+            });
             request.user = payload;
             return true;
         }
         catch (err) {
-            throw new common_1.UnauthorizedException('Invalid token');
+            throw new common_1.UnauthorizedException('Invalid or expired token');
         }
     }
 };

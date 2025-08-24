@@ -19,34 +19,38 @@ const typeorm_2 = require("typeorm");
 const task_entity_1 = require("./task.entity");
 const user_entity_1 = require("../users/user.entity");
 let TasksService = class TasksService {
-    constructor(taskRepo, userRepo) {
-        this.taskRepo = taskRepo;
-        this.userRepo = userRepo;
+    constructor(tasksRepo, usersRepo) {
+        this.tasksRepo = tasksRepo;
+        this.usersRepo = usersRepo;
+    }
+    async create(createTaskDto) {
+        const user = await this.usersRepo.findOneBy({ id: createTaskDto.userId });
+        if (!user)
+            throw new common_1.NotFoundException(`User with ID ${createTaskDto.userId} not found`);
+        const task = this.tasksRepo.create(Object.assign(Object.assign({}, createTaskDto), { user }));
+        return this.tasksRepo.save(task);
     }
     findAll() {
-        return this.taskRepo.find({ relations: ['user'] });
+        return this.tasksRepo.find({ relations: ['user'] });
     }
     async findOne(id) {
-        const task = await this.taskRepo.findOne({ where: { id }, relations: ['user'] });
+        const task = await this.tasksRepo.findOne({ where: { id }, relations: ['user'] });
         if (!task)
-            throw new common_1.NotFoundException(`Task with id ${id} not found`);
+            throw new common_1.NotFoundException(`Task with ID ${id} not found`);
         return task;
-    }
-    async create(userId, title, description) {
-        const user = await this.userRepo.findOneBy({ id: userId });
-        if (!user)
-            throw new common_1.NotFoundException(`User with id ${userId} not found`);
-        const task = this.taskRepo.create({ title, description, user, status: task_entity_1.TaskStatus.PENDING });
-        return this.taskRepo.save(task);
     }
     async updateStatus(id, status) {
         const task = await this.findOne(id);
+        if (!Object.values(task_entity_1.TaskStatus).includes(status)) {
+            throw new common_1.BadRequestException('Invalid task status');
+        }
         task.status = status;
-        return this.taskRepo.save(task);
+        return this.tasksRepo.save(task);
     }
     async remove(id) {
-        const task = await this.findOne(id);
-        return this.taskRepo.remove(task);
+        const result = await this.tasksRepo.delete(id);
+        if (result.affected === 0)
+            throw new common_1.NotFoundException(`Task with ID ${id} not found`);
     }
 };
 exports.TasksService = TasksService;

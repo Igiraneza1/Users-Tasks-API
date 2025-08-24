@@ -7,24 +7,20 @@ export enum TaskStatus {
   DONE = 'DONE',
 }
 
-@Entity('tasks')
+@Entity()
 export class Task {
   @PrimaryGeneratedColumn()
-  id!: number;  
+  id!: number;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column()
   title!: string;
 
-  @Column({ type: 'text' })
+  @Column({ nullable: true })
   description!: string;
 
-  @Column({
-    type: 'enum',
-    enum: TaskStatus,
-    default: TaskStatus.PENDING,
-  })
+  @Column({ type: 'enum', enum: TaskStatus, default: TaskStatus.PENDING })
   status!: TaskStatus;
 
-  @ManyToOne(() => User, user => user.tasks, { onDelete: 'CASCADE', eager: true })
+  @ManyToOne(() => User, (user) => user.tasks, { eager: true }) // auto-load user
   user!: User;
 }

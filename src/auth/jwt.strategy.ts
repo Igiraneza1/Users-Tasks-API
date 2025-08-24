@@ -1,26 +1,18 @@
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { Controller, Patch, Param, Body, UseGuards } from '@nestjs/common';
+import { TasksService } from '../tasks/tasks.service';
+import { UpdateTaskStatusDto } from '../tasks/dto/update-task-status.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
-@Injectable()
-export class JwtAuthGuard implements CanActivate {
-  constructor(private jwtService: JwtService) {}
+@Controller('tasks')
+export class TasksController {
+  constructor(private readonly tasksService: TasksService) {}
 
-  canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest();
-    const authHeader = request.headers['authorization'];
-
-    if (!authHeader) {
-      throw new UnauthorizedException('No token provided');
-    }
-
-    const token = authHeader.split(' ')[1];
-
-    try {
-      const payload = this.jwtService.verify(token, { secret: 'your_jwt_secret' });
-      request.user = payload; 
-      return true;
-    } catch (e) {
-      throw new UnauthorizedException('Invalid token');
-    }
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  updateStatus(
+    @Param('id') id: number,
+    @Body() updateDto: UpdateTaskStatusDto,
+  ) {
+    return this.tasksService.updateStatus(+id, updateDto.status);
   }
 }

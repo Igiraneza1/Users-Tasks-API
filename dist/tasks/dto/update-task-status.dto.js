@@ -16,7 +16,7 @@ class UpdateTaskStatusDto {
 }
 exports.UpdateTaskStatusDto = UpdateTaskStatusDto;
 __decorate([
-    (0, class_validator_1.IsEnum)(task_entity_1.TaskStatus, { message: 'Status must be PENDING, IN_PROGRESS, or DONE' }),
+    (0, class_validator_1.IsEnum)(task_entity_1.TaskStatus, { message: 'Status must be PENDING, IN_PROGRESS or DONE' }),
     __metadata("design:type", String)
 ], UpdateTaskStatusDto.prototype, "status", void 0);
 //# sourceMappingURL=update-task-status.dto.js.map

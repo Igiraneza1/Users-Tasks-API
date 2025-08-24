@@ -8,34 +8,35 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.JwtAuthGuard = void 0;
+exports.TasksController = void 0;
 const common_1 = require("@nestjs/common");
-const jwt_1 = require("@nestjs/jwt");
-let JwtAuthGuard = class JwtAuthGuard {
-    constructor(jwtService) {
-        this.jwtService = jwtService;
+const tasks_service_1 = require("../tasks/tasks.service");
+const update_task_status_dto_1 = require("../tasks/dto/update-task-status.dto");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
+let TasksController = class TasksController {
+    constructor(tasksService) {
+        this.tasksService = tasksService;
     }
-    canActivate(context) {
-        const request = context.switchToHttp().getRequest();
-        const authHeader = request.headers['authorization'];
-        if (!authHeader) {
-            throw new common_1.UnauthorizedException('No token provided');
-        }
-        const token = authHeader.split(' ')[1];
-        try {
-            const payload = this.jwtService.verify(token, { secret: 'your_jwt_secret' });
-            request.user = payload;
-            return true;
-        }
-        catch (e) {
-            throw new common_1.UnauthorizedException('Invalid token');
-        }
+    updateStatus(id, updateDto) {
+        return this.tasksService.updateStatus(+id, updateDto.status);
     }
 };
-exports.JwtAuthGuard = JwtAuthGuard;
-exports.JwtAuthGuard = JwtAuthGuard = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [jwt_1.JwtService])
-], JwtAuthGuard);
+exports.TasksController = TasksController;
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Patch)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, update_task_status_dto_1.UpdateTaskStatusDto]),
+    __metadata("design:returntype", void 0)
+], TasksController.prototype, "updateStatus", null);
+exports.TasksController = TasksController = __decorate([
+    (0, common_1.Controller)('tasks'),
+    __metadata("design:paramtypes", [tasks_service_1.TasksService])
+], TasksController);
 //# sourceMappingURL=jwt.strategy.js.map
